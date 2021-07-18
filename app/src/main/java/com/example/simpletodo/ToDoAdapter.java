@@ -1,7 +1,5 @@
 package com.example.simpletodo;
-
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,8 +49,11 @@ public class ToDoAdapter extends BaseAdapter {
         btn_Todo.setVisibility(View.INVISIBLE);
         btn_Done.setVisibility(View.INVISIBLE);
         btn_Delete.setVisibility(View.INVISIBLE);
-        imgLine.setVisibility(View.INVISIBLE);
-        Log.d(MainActivity.TAG,"Zo ham");
+        if(toDoList.get(i).isDone == false){
+            imgLine.setVisibility(View.INVISIBLE);
+        }else {
+            imgLine.setVisibility(View.VISIBLE);
+        }
 
         view.setOnTouchListener(new OnSwipeTouchListener(context){
             @Override
@@ -60,7 +61,6 @@ public class ToDoAdapter extends BaseAdapter {
                 btn_Todo.setVisibility(View.VISIBLE);
                 btn_Done.setVisibility(View.VISIBLE);
                 btn_Delete.setVisibility(View.VISIBLE);
-                Log.d(MainActivity.TAG1,"Zo hamSwipe");
 
             }
         });
@@ -69,10 +69,8 @@ public class ToDoAdapter extends BaseAdapter {
             this.notifyDataSetChanged();
         });
         btn_Done.setOnClickListener(view1 -> {
-            imgLine.setVisibility(View.VISIBLE);
-            btn_Todo.setVisibility(View.INVISIBLE);
-            btn_Done.setVisibility(View.INVISIBLE);
-            btn_Delete.setVisibility(View.INVISIBLE);
+            toDoList.get(i).isDone = true;
+            this.notifyDataSetChanged();
         });
         btn_Todo.setOnClickListener(view1 -> {
             btn_Todo.setVisibility(View.INVISIBLE);

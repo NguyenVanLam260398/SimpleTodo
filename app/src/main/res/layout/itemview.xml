@@ -23,11 +23,10 @@
 
     </TextView>
     <Button
-        android:layout_marginLeft="73dp"
         android:id="@+id/btn_TODO"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toRightOf="@id/tv_content"
+        app:layout_constraintRight_toLeftOf="@id/btn_Done"
         app:layout_constraintTop_toTopOf="parent"
         android:text="TODO">
 
@@ -36,7 +35,7 @@
         android:id="@+id/btn_Done"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toRightOf="@id/btn_TODO"
+        app:layout_constraintRight_toLeftOf="@id/btn_delete"
         app:layout_constraintTop_toTopOf="parent"
         android:text="DONE">
 
@@ -45,7 +44,7 @@
     android:id="@+id/btn_delete"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    app:layout_constraintLeft_toRightOf="@id/btn_Done"
+    app:layout_constraintRight_toRightOf="parent"
     app:layout_constraintTop_toTopOf="parent"
     android:text="DELETE">
 

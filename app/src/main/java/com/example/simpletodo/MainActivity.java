@@ -6,14 +6,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import org.apache.commons.io.FileUtils;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String TAG = "COM";
-    public static final String TAG1 = "COM1";
     private Button btn_search;
     private Button btn_AddItem;
     private Button btn_unDone;
@@ -29,29 +24,44 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         findOB();
         items = new ArrayList<>();
-        items.add(new ToDo("One"));
-        items.add(new ToDo("Two"));
-        //ReadItems();
+        items.add(new ToDo("One",false));
+        items.add(new ToDo("Two",false));
         toDoAdapter = new ToDoAdapter(MainActivity.this,R.layout.itemview,items);
         listView.setAdapter(toDoAdapter);
         btn_AddItem.setOnClickListener(view -> {
-            items.add(new ToDo(edtText.getText().toString()));
+            items.add(new ToDo(edtText.getText().toString(),false));
             toDoAdapter.notifyDataSetChanged();
             edtText.setText("");
-            WriteItems();
         });
         btn_search.setOnClickListener(view -> {
-            for (ToDo item : items) {
-                if(edt_search.getText().toString().equals(item.toDo)){
+            for (int i=0;i< items.size();i++) {
+                String text=edt_search.getText().toString();
+                if(text.equals(items.get(i).toDo) ){
+                    ToDo toDo=items.get(i);
                     items.clear();
-                    Log.d(TAG, "onCreate: ");
-                    items.add(new ToDo(edt_search.getText().toString()));
-                    toDoAdapter.notifyDataSetChanged();
-                    edt_search.setText("");
-                    WriteItems();
+                    items.add(toDo);
                 }
             }
+            toDoAdapter.notifyDataSetChanged();
         });
+
+        btn_Done.setOnClickListener(view -> {
+            for (int i=0;i< items.size();i++) {
+                if(items.get(i).isDone == false){
+                    items.remove(i);
+                }
+            }
+            toDoAdapter.notifyDataSetChanged();
+        });
+        btn_unDone.setOnClickListener(view -> {
+            for (int i=0;i< items.size();i++) {
+                if(items.get(i).isDone == true){
+                    items.remove(i);
+                }
+            }
+            toDoAdapter.notifyDataSetChanged();
+        });
+
         setUpListViewListener();
     }
 
@@ -59,27 +69,8 @@ public class MainActivity extends AppCompatActivity {
             listView.setOnItemLongClickListener((adapterView, view, i, l) -> {
             items.remove(i);
             toDoAdapter.notifyDataSetChanged();
-            WriteItems();
             return true;
         });
-    }
-    private void ReadItems(){
-        File filesDir = getFilesDir();
-        File todoFile = new File(filesDir,"todo.txt");
-        try{
-            items = new ArrayList<ToDo>(FileUtils.readLines(todoFile));
-        }catch (IOException e){
-            items = new ArrayList<>();
-        }
-    }
-    private void WriteItems(){
-        File filesDir = getFilesDir();
-        File todoFile = new File (filesDir,"todo.txt");
-        try{
-            FileUtils.writeLines(todoFile, items);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
     }
     private void findOB(){
         listView = findViewById(R.id.listview);
