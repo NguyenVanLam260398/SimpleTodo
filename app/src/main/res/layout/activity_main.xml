@@ -6,13 +6,66 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:orientation="horizontal"
+        android:id="@+id/Search"
+        android:weightSum="2"
+        >
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:id="@+id/edt_Search"
+            android:hint="@string/search">
 
+        </EditText>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:text="@string/search"
+            android:id="@+id/btn_Search">
+
+        </Button>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/Search"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:orientation="horizontal"
+        android:id="@+id/Done"
+        android:weightSum="2"
+        >
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="unDone"
+            android:id="@+id/btn_unDone">
+            >
+
+        </Button>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Done"
+            android:id="@+id/btn_Done">
+
+        </Button>
+    </LinearLayout>
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/listview"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/Done"
+        app:layout_constraintLeft_toLeftOf="parent"
+        >
 
     </ListView>
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -39,11 +92,9 @@
             app:layout_constraintLeft_toRightOf="@id/edit"
             app:layout_constraintTop_toBottomOf="@id/listview"
             android:text="Add Item"
-            android:onClick="AddItem"
+            android:id="@+id/btn_AddItem"
             >
         </Button>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

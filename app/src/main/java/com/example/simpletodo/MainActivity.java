@@ -1,67 +1,75 @@
 package com.example.simpletodo;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
+import android.util.Log;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-
 import org.apache.commons.io.FileUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-
+    public static final String TAG = "COM";
+    public static final String TAG1 = "COM1";
+    private Button btn_search;
+    private Button btn_AddItem;
+    private Button btn_unDone;
+    private Button btn_Done;
+    private EditText edtText;
+    private EditText edt_search;
     private ListView listView;
-    private ArrayList<String> items;
-    private ArrayAdapter<String> itemsAdapter;
+    private ArrayList<ToDo> items;
+    private ToDoAdapter toDoAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        listView = findViewById(R.id.listview);
-        items = new ArrayList<String>();
-        ReadItems();
-        itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,items);
-        items.add("First Item");
-        items.add("Second Item");
-        listView.setAdapter(itemsAdapter);
-
+        findOB();
+        items = new ArrayList<>();
+        items.add(new ToDo("One"));
+        items.add(new ToDo("Two"));
+        //ReadItems();
+        toDoAdapter = new ToDoAdapter(MainActivity.this,R.layout.itemview,items);
+        listView.setAdapter(toDoAdapter);
+        btn_AddItem.setOnClickListener(view -> {
+            items.add(new ToDo(edtText.getText().toString()));
+            toDoAdapter.notifyDataSetChanged();
+            edtText.setText("");
+            WriteItems();
+        });
+        btn_search.setOnClickListener(view -> {
+            for (ToDo item : items) {
+                if(edt_search.getText().toString().equals(item.toDo)){
+                    items.clear();
+                    Log.d(TAG, "onCreate: ");
+                    items.add(new ToDo(edt_search.getText().toString()));
+                    toDoAdapter.notifyDataSetChanged();
+                    edt_search.setText("");
+                    WriteItems();
+                }
+            }
+        });
         setUpListViewListener();
     }
 
-    public void AddItem(View view) {
-        EditText edtText = findViewById(R.id.edit);
-        items.add(edtText.getText().toString());
-        itemsAdapter.notifyDataSetChanged();
-
-        edtText.setText("");
-        WriteItems();
-
-    }
     private void setUpListViewListener(){
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                items.remove(i);
-                itemsAdapter.notifyDataSetChanged();
-                WriteItems();
-                return true;
-            }
+            listView.setOnItemLongClickListener((adapterView, view, i, l) -> {
+            items.remove(i);
+            toDoAdapter.notifyDataSetChanged();
+            WriteItems();
+            return true;
         });
     }
     private void ReadItems(){
         File filesDir = getFilesDir();
         File todoFile = new File(filesDir,"todo.txt");
         try{
-            items = new ArrayList<String>(org.apache.commons.io.FileUtils.readLines(todoFile));
+            items = new ArrayList<ToDo>(FileUtils.readLines(todoFile));
         }catch (IOException e){
-            items = new ArrayList<String>();
+            items = new ArrayList<>();
         }
     }
     private void WriteItems(){
@@ -72,5 +80,14 @@ public class MainActivity extends AppCompatActivity {
         }catch (IOException e){
             e.printStackTrace();
         }
+    }
+    private void findOB(){
+        listView = findViewById(R.id.listview);
+        btn_AddItem = findViewById(R.id.btn_AddItem);
+        btn_search = findViewById(R.id.btn_Search);
+        btn_Done = findViewById(R.id.btn_Done);
+        btn_unDone = findViewById(R.id.btn_unDone);
+        edtText = findViewById(R.id.edit);
+        edt_search = findViewById(R.id.edt_Search);
     }
 }
