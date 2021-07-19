@@ -7,15 +7,14 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import java.util.List;
 
-public class toDoAdapter extends BaseAdapter {
+public class TasksAdapter extends BaseAdapter {
     Context context;
     int layout;
     List<Task> taskList;
 
-    public toDoAdapter(Context context, int layout, List<Task> taskList) {
+    public TasksAdapter(Context context, int layout, List<Task> taskList) {
         this.context = context;
         this.layout = layout;
         this.taskList = taskList;
@@ -55,7 +54,7 @@ public class toDoAdapter extends BaseAdapter {
         btnTodo.setVisibility(View.INVISIBLE);
         btnDone.setVisibility(View.INVISIBLE);
         btnDelete.setVisibility(View.INVISIBLE);
-        if(taskList.get(i).state == State.unDone){
+        if(taskList.get(i).state == State.UNDONE){
             imgLine.setVisibility(View.INVISIBLE);
         }else {
             imgLine.setVisibility(View.VISIBLE);
@@ -77,15 +76,15 @@ public class toDoAdapter extends BaseAdapter {
         });
 
         btnDone.setOnClickListener(view1 -> {
-            taskList.get(i).state = State.done;
+            taskList.get(i).state = State.DONE;
             this.notifyDataSetChanged();
         });
 
         btnTodo.setOnClickListener(view1 -> {
-            if(taskList.get(i).state == State.done){
-                taskList.get(i).state = State.unDone;
+            if(taskList.get(i).state == State.DONE){
+                taskList.get(i).state = State.UNDONE;
             }else{
-                taskList.get(i).state = State.unDone;
+                taskList.get(i).state = State.UNDONE;
             }
             this.notifyDataSetChanged();
         });

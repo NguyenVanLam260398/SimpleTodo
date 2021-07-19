@@ -1,7 +1,7 @@
 package com.example.simpletodo;
 
 enum State{
-    done, unDone
+    DONE, UNDONE
 }
 public class Task {
     public String title;
@@ -9,7 +9,7 @@ public class Task {
 
     public Task(String title) {
         this.title = title;
-        this.state = State.unDone;
+        this.state = State.UNDONE;
     }
 
     public Task(String title, State state) {
