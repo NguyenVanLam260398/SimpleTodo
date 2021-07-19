@@ -7,17 +7,23 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TasksAdapter extends BaseAdapter {
     Context context;
     int layout;
     List<Task> taskList;
+    List<TaskCellView> taskCellViewslist = new ArrayList<>();
+    DoneElement doneElement;
+    Remove remove;
 
-    public TasksAdapter(Context context, int layout, List<Task> taskList) {
+    public TasksAdapter(Context context, int layout, List<Task> taskList, DoneElement doneElement, Remove remove) {
         this.context = context;
         this.layout = layout;
         this.taskList = taskList;
+        this.doneElement = doneElement;
+        this.remove = remove;
     }
 
     public void setTaskList(List<Task> taskList) {
@@ -40,10 +46,10 @@ public class TasksAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public View getView(int i, View view1, ViewGroup viewGroup) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        view = inflater.inflate(layout,null);
-
+        View view = inflater.inflate(layout,null);
+        view.setTag(i);
         TextView tvToDo = view.findViewById(R.id.tv_content);
         Button btnTodo = view.findViewById(R.id.btn_TODO);
         Button btnDone = view.findViewById(R.id.btn_Done);
@@ -54,6 +60,7 @@ public class TasksAdapter extends BaseAdapter {
         btnTodo.setVisibility(View.INVISIBLE);
         btnDone.setVisibility(View.INVISIBLE);
         btnDelete.setVisibility(View.INVISIBLE);
+        taskCellViewslist.add(new TaskCellView(i,btnTodo,btnDone,btnDelete));
         if(taskList.get(i).state == State.UNDONE){
             imgLine.setVisibility(View.INVISIBLE);
         }else {
@@ -63,29 +70,35 @@ public class TasksAdapter extends BaseAdapter {
         view.setOnTouchListener(new OnSwipeTouchListener(context){
             @Override
             public void onSwipeLeft() {
-                btnTodo.setVisibility(View.VISIBLE);
-                btnDone.setVisibility(View.VISIBLE);
-                btnDelete.setVisibility(View.VISIBLE);
-
+                for (TaskCellView taskCellView : taskCellViewslist) {
+                    if(taskCellView.getIndex() == (int) view.getTag()){
+                        taskCellView.show();
+                    }else{
+                        taskCellView.hiden();
+                    }
+                }
             }
         });
 
-        btnDelete.setOnClickListener(view1 -> {
+        btnDelete.setOnClickListener(view2 -> {
+            remove.reMove(taskList.get(i).title);
             taskList.remove(i);
             this.notifyDataSetChanged();
         });
 
-        btnDone.setOnClickListener(view1 -> {
+        btnDone.setOnClickListener(view2 -> {
             taskList.get(i).state = State.DONE;
+            doneElement.doneElement(taskList);
             this.notifyDataSetChanged();
         });
 
-        btnTodo.setOnClickListener(view1 -> {
+        btnTodo.setOnClickListener(view2 -> {
             if(taskList.get(i).state == State.DONE){
                 taskList.get(i).state = State.UNDONE;
             }else{
                 taskList.get(i).state = State.UNDONE;
             }
+            doneElement.doneElement(taskList);
             this.notifyDataSetChanged();
         });
 

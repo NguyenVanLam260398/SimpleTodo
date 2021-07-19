@@ -24,6 +24,33 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         bindViews();
         tasks = new ArrayList<>();
+        DoneElement doneElement = new DoneElement() {
+            @Override
+            public void doneElement(List<Task> taskList) {
+                int indexTask;
+                for(indexTask = 0; indexTask < tasks.size(); indexTask++) {
+                    int indexTaskFilter;
+                    for(indexTaskFilter = 0;indexTaskFilter<taskList.size();indexTaskFilter++){
+                        if(taskList.get(indexTaskFilter).title.equals(tasks.get(indexTask).title)){
+                            tasks.get(indexTask).setState(taskList.get(indexTaskFilter).getState());
+                        }
+                    }
+                }
+            }
+        };
+
+        Remove remove = new Remove() {
+            @Override
+            public void reMove(String titleTask) {
+                int index;
+                for(index = 0; index < tasks.size(); index++){
+                    if(tasks.get(index).title.equals(titleTask)){
+                        tasks.remove(index);
+                    }
+                }
+            }
+        };
+
         tasks.add(new Task("One"));
         tasks.add(new Task("Two hai", State.DONE));
         tasks.add(new Task("One ba"));
@@ -32,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         tasks.add(new Task("Two sau", State.DONE));
         tasks.add(new Task("One bay"));
         tasks.add(new Task("Two 4", State.DONE));
-        TasksAdapter = new TasksAdapter(MainActivity.this,R.layout.itemview, tasks);
+        TasksAdapter = new TasksAdapter(MainActivity.this,R.layout.itemview, tasks, doneElement, remove);
         listView.setAdapter(TasksAdapter);
         btnAddItem.setOnClickListener(view -> {
             tasks.add(new Task(editText.getText().toString()));
@@ -42,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         btnSearch.setOnClickListener(view -> {
             List<Task> arrayFilterTask = new ArrayList<>();
             String inPutTitle= editSearch.getText().toString().toLowerCase();
-            for (int i = 0; i< tasks.size(); i++) {
+            for (int i = 0; i < tasks.size(); i++) {
                 String getTaskTitle = tasks.get(i).title.toLowerCase();
                 if(getTaskTitle.contains(inPutTitle)){
                     arrayFilterTask.add(tasks.get(i));
@@ -62,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
             TasksAdapter.setTaskList(arrayFilterTask);
             TasksAdapter.notifyDataSetChanged();
         });
+
         btnUnDone.setOnClickListener(view -> {
             List<Task> arrayFilterTask = new ArrayList<>();
             for (Task task : tasks) {
@@ -77,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
             TasksAdapter.notifyDataSetChanged();
         });
     }
+
     private void bindViews(){
         listView = findViewById(R.id.listview);
         btnAddItem = findViewById(R.id.btn_AddItem);
